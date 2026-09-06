@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* 1. Define Custom Theme Animations for Tailwind v4 */
+@theme {
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-scale-up: scale-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-up {
+    0% {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
+
+/* 2. Configure Dark Mode Custom Variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* 3. Global Body Styles */
+body {
+  @apply bg-gray-50 text-gray-900 transition-colors duration-300 antialiased;
+}
+
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
