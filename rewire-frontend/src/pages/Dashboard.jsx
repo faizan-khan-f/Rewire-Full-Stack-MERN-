@@ -467,9 +467,9 @@ const Dashboard = () => {
         <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
           <button
             onClick={() => setShowTracker(false)}
-            className="flex items-center text-sm font-bold text-gray-500 hover:text-emerald-600 transition-colors cursor-pointer"
+            className="flex items-center text-sm font-bold text-gray-200 hover:text-emerald-600 transition-colors cursor-pointer"
           >
-            <ArrowLeft size={16} className="mr-1" /> Back to Dashboard
+            <ArrowLeft size={16} className=" mr-1" /> Back to Dashboard
           </button>
           <span className="text-xs font-bold text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 px-3 py-1 rounded-full uppercase tracking-wider flex items-center">
             <Activity size={14} className="mr-1" /> Active Focus

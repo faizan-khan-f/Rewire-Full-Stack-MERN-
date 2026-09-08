@@ -14,7 +14,6 @@ const Profile = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // const API_URL = "http://localhost:5000/api/auth/profile";
   const API_URL = `${import.meta.env.VITE_API_URL}/auth/profile`;
   const token = (() => {
     try {
@@ -56,6 +55,10 @@ const Profile = () => {
     day: "numeric",
   });
 
+  // 🚨 FIX: Safety fallbacks to prevent crashes if data is missing
+  const completedChallenges = profileData.completedChallenges || [];
+  const activePlan = profileData.activePlan || "none";
+
   return (
     <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
       {/* Header Section */}
@@ -85,7 +88,7 @@ const Profile = () => {
           </h2>
         </div>
 
-        {profileData.completedChallenges.length === 0 ? (
+        {completedChallenges.length === 0 ? (
           <div className="text-center py-10 bg-gray-50 dark:bg-gray-900 rounded-2xl border border-dashed border-gray-300 dark:border-gray-700">
             <Star
               size={32}
@@ -100,7 +103,7 @@ const Profile = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {profileData.completedChallenges.map((challenge, index) => (
+            {completedChallenges.map((challenge, index) => (
               <div
                 key={index}
                 className="flex items-start p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 rounded-2xl animate-scale-up"
@@ -131,9 +134,9 @@ const Profile = () => {
               Current Active Focus
             </h3>
             <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-              {profileData.activePlan === "none"
+              {activePlan === "none"
                 ? "Resting / No active challenge"
-                : profileData.activePlan.replace(/-/g, " ")}
+                : activePlan.replace(/-/g, " ")}
             </p>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+// import WelcomeDashboard from "./pages/WelcomeDashboard";
 // Importing the actual pages we built, NOT placeholders
 import Home from "./pages/Home";
 import AuthPage from "./pages/AuthPage";
@@ -30,6 +31,9 @@ function App() {
                 <Route path="/login" element={<AuthPage />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/contact" element={<Contact />} />
+
+                {/* The dashboard URL for the 3 containers */}
+                <Route path="/dashboard" element={<Dashboard />} />
 
                 {/* Protected Routes */}
                 <Route

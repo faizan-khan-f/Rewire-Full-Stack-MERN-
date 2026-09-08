@@ -62,6 +62,12 @@ export const startPlan = async (req, res) => {
       planType,
       tasks: generatedTasks,
     });
+
+    // 🚨 FIX: Update the User's active plan status in the database
+    user.activePlan = planType;
+    user.planStartDate = new Date();
+    await user.save();
+    //
     res.status(201).json(newPlan);
   } catch (error) {
     console.error("CRITICAL PLAN START ERROR:", error);

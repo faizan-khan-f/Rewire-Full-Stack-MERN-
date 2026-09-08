@@ -8,8 +8,32 @@
 // export default Home;
 import { Link } from "react-router-dom";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Navigate } from "react-router-dom";
+// Import your auth hook (adjust the path to match your project)
+// import { useAuth } from '../context/AuthContext';
+import { useContext } from "react";
+// IMPORTANT: Update this import path to point exactly to your AuthContext file
+import { AuthContext } from "../context/AuthContext";
 
 const Home = () => {
+  // const isLoggedIn = Boolean(localStorage.getItem("token"));
+
+  // // 2. The Intercept: If logged in, send them straight to the dashboard
+  // if (isLoggedIn) {
+  //   return <Navigate to="/dashboard" replace />;
+  // // }
+
+  // 1. Pull the user state directly from your AuthContext
+  const { user } = useContext(AuthContext);
+
+  // 2. Debugging log (Check your browser console (F12) to see what this prints)
+  // console.log("Current user state in Home:", user);
+
+  // 3. The Redirect: If the user object exists, send them to the dashboard
+  if (user) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] py-12 px-4 text-center space-y-12 animate-fade-in">
       {/* Hero Section */}

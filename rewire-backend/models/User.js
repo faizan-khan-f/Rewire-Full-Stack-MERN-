@@ -20,6 +20,11 @@ const userSchema = new mongoose.Schema(
       enum: ["none", "reset", "reset-and-rewire", "reset-rewire-and-rebounce"],
       default: "none",
     },
+    // 🚨 FIX: Added this so start/cancel/complete controllers can save dates correctly
+    planStartDate: {
+      type: Date,
+      default: null,
+    },
     completedChallenges: {
       type: [String],
       default: [],
