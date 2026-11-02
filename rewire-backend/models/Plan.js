@@ -11,10 +11,21 @@ const taskSchema = new mongoose.Schema({
   },
 });
 
-// Sub-schema for user-generated custom tasks
+// // Sub-schema for user-generated custom tasks
+// const customTaskSchema = new mongoose.Schema({
+//   title: { type: String, required: true },
+//   status: { type: String, enum: ["pending", "finished"], default: "pending" },
+//   createdAt: { type: Date, default: Date.now }, // Tracks when the cycle started
+// });
 const customTaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  status: { type: String, enum: ["pending", "finished"], default: "pending" },
+  // Update the enum to accept lowercase 'pending' and 'completed'
+  status: {
+    type: String,
+    enum: ["pending", "completed"], // Make sure these are lowercase
+    default: "pending",
+  },
+  createdAt: { type: Date, default: Date.now },
 });
 
 const planSchema = new mongoose.Schema(

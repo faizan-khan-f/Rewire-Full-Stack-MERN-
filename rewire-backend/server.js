@@ -4,6 +4,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
 import planRoutes from "./routes/planRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+import { startCronJobs } from "./utils/cronJobs.js"; // 🟢 Import the cron job
 
 dotenv.config();
 
@@ -41,11 +43,14 @@ app.use("/api/auth", authRoutes);
 
 // 2. Make sure this line exists below your database connection
 app.use("/api/plans", planRoutes);
+app.use("/api/ai", aiRoutes); // <--- Add this line
 
 // Basic Test Route
 app.get("/", (req, res) => {
   res.send("Rewire, Reset & Rebounce API is running...");
 });
+// 🟢 Start the automated reset timers
+startCronJobs();
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

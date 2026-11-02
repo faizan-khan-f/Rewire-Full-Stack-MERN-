@@ -20,6 +20,10 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import confetti from "canvas-confetti";
+import CustomTaskSection from "../components/CustomTaskSection"; // Adjust path if needed
+import AIPlanGenerator from "../components/AIPlanGenerator";
+import AIStrategySection from "../components/AIStrategySection";
+import RandomQuote from "../components/RandomQuote"; // Adjust the path if your folder structure is different
 
 // --- SYNTHESIZED SOUND ENGINE (Multi-Note Chimes & Clicks) ---
 const playClick = () => {
@@ -116,147 +120,162 @@ const triggerVictoryConfetti = () => {
 };
 
 // --- REUSABLE COMPONENT FOR CUSTOM SECTIONS ---
-const CustomTaskSection = ({
-  title,
-  description,
-  icon: Icon,
-  listType,
-  activePlan,
-  token,
-  API_URL,
-  setActivePlan,
-  onTaskFinish,
-}) => {
-  const [newTask, setNewTask] = useState("");
-  const tasks = activePlan[listType] || [];
-  const limitReached = tasks.length >= 10;
+// const CustomTaskSection = ({
+//   title,
+//   description,
+//   icon: Icon,
+//   listType,
+//   activePlan,
+//   token,
+//   API_URL,
+//   setActivePlan,
+//   onTaskFinish,
+// }) => {
+//   const [newTask, setNewTask] = useState("");
+//   const tasks = activePlan[listType] || [];
+//   const limitReached = tasks.length >= 10;
 
-  const handleAdd = async (e) => {
-    e.preventDefault();
-    if (!newTask.trim() || limitReached) return;
-    try {
-      const res = await axios.post(
-        `${API_URL}/custom-task`,
-        { listType, title: newTask },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      setActivePlan(res.data);
-      setNewTask("");
-    } catch (error) {
-      alert("Failed to add task.");
-    }
-  };
+//   const handleAdd = async (e) => {
+//     e.preventDefault();
+//     if (!newTask.trim() || limitReached) return;
+//     try {
+//       const res = await axios.post(
+//         `${API_URL}/custom-task`,
+//         { listType, title: newTask },
+//         { headers: { Authorization: `Bearer ${token}` } },
+//       );
+//       setActivePlan(res.data);
+//       setNewTask("");
+//     } catch (error) {
+//       alert("Failed to add task.");
+//     }
+//   };
 
-  const handleUpdate = async (taskId, status) => {
-    try {
-      const res = await axios.put(
-        `${API_URL}/custom-task`,
-        { listType, taskId, status },
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      setActivePlan(res.data);
-      if (status === "finished" && onTaskFinish) onTaskFinish();
-    } catch (error) {
-      console.error("Failed to update status.");
-    }
-  };
+//   // 2. Toggle a custom task's status (Pending <-> Completed)
+//   // const handleUpdate = async (listType, taskId, currentStatus) => {
+//   //   const newStatus = currentStatus === "completed" ? "pending" : "completed";
+//   //   try {
+//   //     const res = await axios.put(
+//   //       `${import.meta.env.VITE_API_URL}/plans/custom-task`,
+//   //       { listType, taskId, status: newStatus },
+//   //       { headers: { Authorization: `Bearer ${token}` } },
+//   //     );
+//   //     setActivePlan(res.data);
+//   //   } catch (error) {
+//   //     console.error("Failed to update custom task:", error);
+//   //   }
+//   // };
 
-  const handleDelete = async (taskId) => {
-    try {
-      const res = await axios.delete(
-        `${API_URL}/custom-task/${listType}/${taskId}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      setActivePlan(res.data);
-    } catch (error) {
-      console.error("Failed to delete task.");
-    }
-  };
+//   // const handleUpdate = async (taskId, status) => {
+//   //   try {
+//   //     const res = await axios.put(
+//   //       `${API_URL}/custom-task`,
+//   //       { listType, taskId, status },
+//   //       { headers: { Authorization: `Bearer ${token}` } },
+//   //     );
+//   //     setActivePlan(res.data);
+//   //     if (status === "finished" && onTaskFinish) onTaskFinish();
+//   //   } catch (error) {
+//   //     console.error("Failed to update status.");
+//   //   }
+//   // };
 
-  return (
-    <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 animate-fade-in">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center">
-          <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg mr-3">
-            <Icon size={20} />
-          </div>
-          <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
-              {title}{" "}
-              <span className="ml-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">
-                {tasks.length}/10 Max
-              </span>
-            </h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400">
-              {description}
-            </p>
-          </div>
-        </div>
-      </div>
+// const handleDelete = async (taskId) => {
+//   try {
+//     const res = await axios.delete(
+//       `${API_URL}/custom-task/${listType}/${taskId}`,
+//       { headers: { Authorization: `Bearer ${token}` } },
+//     );
+//     setActivePlan(res.data);
+//   } catch (error) {
+//     console.error("Failed to delete task.");
+//   }
+// };
 
-      <form onSubmit={handleAdd} className="flex space-x-2 mb-4">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder={
-            limitReached ? "Max limit reached" : "Add a custom goal..."
-          }
-          disabled={limitReached}
-          maxLength={100}
-          className="flex-grow px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:text-white text-sm disabled:opacity-60"
-        />
-        <button
-          type="submit"
-          disabled={limitReached || !newTask.trim()}
-          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:dark:bg-gray-700 text-white font-bold rounded-xl transition-transform active:scale-95"
-        >
-          <Plus size={18} />
-        </button>
-      </form>
+// return (
+//   <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 animate-fade-in">
+//     <div className="flex items-start justify-between mb-4">
+//       <div className="flex items-center">
+//         <div className="p-2 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-lg mr-3">
+//           <Icon size={20} />
+//         </div>
+//         <div>
+//           <h3 className="text-lg font-bold text-gray-900 dark:text-white flex items-center">
+//             {title}{" "}
+//             <span className="ml-2 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">
+//               {tasks.length}/10 Max
+//             </span>
+//           </h3>
+//           <p className="text-xs text-gray-500 dark:text-gray-400">
+//             {description}
+//           </p>
+//         </div>
+//       </div>
+//     </div>
 
-      <div className="space-y-2">
-        {tasks.map((task) => (
-          <div
-            key={task._id}
-            className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 rounded-xl transition-all group"
-          >
-            <div
-              className="flex items-center cursor-pointer flex-grow"
-              onClick={() =>
-                handleUpdate(
-                  task._id,
-                  task.status === "pending" ? "finished" : "pending",
-                )
-              }
-            >
-              <div
-                className={`mr-3 p-0.5 rounded-full border-2 transition-colors ${task.status === "finished" ? "bg-emerald-500 border-emerald-500 text-white" : "border-gray-300 dark:border-gray-600"}`}
-              >
-                {task.status === "finished" ? (
-                  <CheckCircle size={14} />
-                ) : (
-                  <Circle size={14} className="text-transparent" />
-                )}
-              </div>
-              <span
-                className={`text-sm font-medium transition-colors ${task.status === "finished" ? "text-gray-400 line-through" : "text-gray-700 dark:text-gray-200"}`}
-              >
-                {task.title}
-              </span>
-            </div>
-            <button
-              onClick={() => handleDelete(task._id)}
-              className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+//     <form onSubmit={handleAdd} className="flex space-x-2 mb-4">
+//       <input
+//         type="text"
+//         value={newTask}
+//         onChange={(e) => setNewTask(e.target.value)}
+//         placeholder={
+//           limitReached ? "Max limit reached" : "Add a custom goal..."
+//         }
+//         disabled={limitReached}
+//         maxLength={100}
+//         className="flex-grow px-4 py-2.5 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-emerald-500 focus:outline-none dark:text-white text-sm disabled:opacity-60"
+//       />
+//       <button
+//         type="submit"
+//         disabled={limitReached || !newTask.trim()}
+//         className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-300 disabled:dark:bg-gray-700 text-white font-bold rounded-xl transition-transform active:scale-95"
+//       >
+//         <Plus size={18} />
+//       </button>
+//     </form>
+
+//     <div className="space-y-2">
+//       {tasks.map((task) => (
+//         <div
+//           key={task._id}
+//           className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-900 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 rounded-xl transition-all group"
+//         >
+//           <div
+//             className="flex items-center cursor-pointer flex-grow"
+//             onClick={() =>
+//               handleUpdate(
+//                 task._id,
+//                 task.status === "pending" ? "finished" : "pending",
+//               )
+//             }
+//           >
+//             <div
+//               className={`mr-3 p-0.5 rounded-full border-2 transition-colors ${task.status === "finished" ? "bg-emerald-500 border-emerald-500 text-white" : "border-gray-300 dark:border-gray-600"}`}
+//             >
+//               {task.status === "finished" ? (
+//                 <CheckCircle size={14} />
+//               ) : (
+//                 <Circle size={14} className="text-transparent" />
+//               )}
+//             </div>
+//             <span
+//               className={`text-sm font-medium transition-colors ${task.status === "finished" ? "text-gray-400 line-through" : "text-gray-700 dark:text-gray-200"}`}
+//             >
+//               {task.title}
+//             </span>
+//           </div>
+//           <button
+//             onClick={() => handleDelete(task._id)}
+//             className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity p-1"
+//           >
+//             <Trash2 size={16} />
+//           </button>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
+// );
+// };
 
 // --- MAIN DASHBOARD COMPONENT ---
 const Dashboard = () => {
@@ -264,9 +283,28 @@ const Dashboard = () => {
   const [activePlan, setActivePlan] = useState(null);
   const [showTracker, setShowTracker] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [aiPlan, setAiPlan] = useState(null); //ai hoook
 
   const API_URL = `${import.meta.env.VITE_API_URL}/plans`;
   const token = JSON.parse(localStorage.getItem("user"))?.token;
+
+  // Fetch existing AI Plan on load
+  useEffect(() => {
+    const fetchAIPlan = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/ai/myplan`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (res.data) setAiPlan(res.data);
+      } catch (error) {
+        console.log("No active AI plan found.");
+      }
+    };
+    if (token) fetchAIPlan();
+  }, [token]);
 
   // Global Click Sound Listener
   useEffect(() => {
@@ -436,6 +474,25 @@ const Dashboard = () => {
       alert("Failed to save plan note.");
     }
   };
+  const handleResetPlan = async () => {
+    if (
+      !window.confirm(
+        "Are you sure you want to erase this plan and start over?",
+      )
+    )
+      return;
+
+    try {
+      // 🟢 Fix: Use the exact URL path, avoiding the broken API_URL variable
+      await axios.delete("http://localhost:5000/api/ai/plan", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAiPlan(null);
+    } catch (err) {
+      console.error("Failed to reset plan:", err);
+    }
+  };
 
   if (showTracker && activePlan && !loading) {
     const dayDiff =
@@ -463,6 +520,8 @@ const Dashboard = () => {
 
     return (
       <div className="max-w-4xl mx-auto space-y-6 pb-12 animate-fade-in">
+        {/* 🟢 NEW: Random Quote at the very top of the tasks page */}
+        <RandomQuote />
         {/* Navigation Bar */}
         <div className="flex justify-between items-center bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
           <button
@@ -568,6 +627,21 @@ const Dashboard = () => {
             )}
           </div>
         </div>
+
+        {/* AI Strategy Generator
+        <div className="mt-8 mb-8">
+          {!aiPlan ? (
+            <AIPlanGenerator
+              token={token}
+              API_URL={import.meta.env.VITE_API_URL}
+              onPlanGenerated={setAiPlan}
+            />
+          ) : (
+            <div className="text-emerald-500 font-bold p-4 bg-emerald-50 rounded-xl">
+              AI Plan successfully generated! (Rendering logic pending...)
+            </div>
+          )}
+        </div> */}
         {/* --- CUSTOM TARGETS SECTION --- */}
         {/* <div className="flex items-center space-x-2 pt-4 pb-2 border-b border-gray-200 dark:border-gray-700">
           <Target
@@ -644,6 +718,39 @@ const Dashboard = () => {
               </div>
             )}
           </div>
+        </div>
+        {/* AI Strategy Generator / Display */}
+        <div className="mt-8 mb-8">
+          {!aiPlan ? (
+            <AIPlanGenerator
+              token={token}
+              API_URL={import.meta.env.VITE_API_URL}
+              onPlanGenerated={setAiPlan}
+            />
+          ) : (
+            <AIStrategySection
+              aiPlan={aiPlan}
+              setAiPlan={setAiPlan}
+              token={token}
+              API_URL={API_URL}
+            />
+          )}
+        </div>
+        {/* 🟢 Smaller, Natural Theme Action Buttons */}
+        <div className="mt-8 pt-4 border-t border-gray-700/50 flex justify-end space-x-4">
+          {/* <button
+            onClick={handleResetPlan}
+            className="px-4 py-1.5 text-sm font-medium text-gray-300 bg-gray-700 rounded hover:bg-gray-600 hover:text-white transition-colors duration-200"
+          >
+            Regenerate Plan
+          </button> */}
+
+          <button
+            onClick={handleResetPlan}
+            className="px-4 py-1.5 text-sm font-medium text-red-400 border border-red-500/30 rounded hover:bg-red-500/10 hover:border-red-500/50 transition-colors duration-200"
+          >
+            Regenarate Plan (Reset)
+          </button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <CustomTaskSection

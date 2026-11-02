@@ -89,17 +89,102 @@ export const startPlan = async (req, res) => {
 // };
 // @desc    Get user's active plan
 // @route   GET /api/plans/myplan
+// export const getActivePlan = async (req, res) => {
+//   try {
+//     // Fetch the active plan for the logged-in user
+//     const plan = await Plan.findOne({ user: req.user._id });
+
+//     if (!plan) {
+//       return res.status(404).json({ message: "No active plan found." });
+//     }
+
+//     // Return the ENTIRE plan document so the frontend receives
+//     // all customDaily, customWeekly arrays, and plan notes on page load.
+//     res.status(200).json(plan);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+// Inside controllers/planController.js
+
 export const getActivePlan = async (req, res) => {
   try {
-    // Fetch the active plan for the logged-in user
     const plan = await Plan.findOne({ user: req.user._id });
 
     if (!plan) {
       return res.status(404).json({ message: "No active plan found." });
     }
 
-    // Return the ENTIRE plan document so the frontend receives
-    // all customDaily, customWeekly arrays, and plan notes on page load.
+    let isModified = false;
+    const now = new Date();
+
+    // Time constants in milliseconds
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    // const ONE_DAY = 60 * 100;
+    const ONE_WEEK = 7 * ONE_DAY;
+    const TWENTY_ONE_DAYS = 21 * ONE_DAY;
+    const NINETY_DAYS = 90 * ONE_DAY;
+
+    // Helper function to manage the lifecycle of custom tasks
+    const manageCustomTasks = (taskArray, maxAgeMs) => {
+      if (!taskArray) return [];
+
+      // Filter/Update tasks based on their age
+      const processedTasks = taskArray.filter((task) => {
+        const taskTime = task.createdAt ? new Date(task.createdAt) : now;
+        const age = now - taskTime;
+
+        // If the task has outlived its duration (e.g., 24 hours for daily)
+        // if (age >= maxAgeMs) {
+        //   // DEFAULT BEHAVIOR: Reset the task for the next cycle
+        //   task.status = "pending"; // Unchecks the box
+        //   task.createdAt = now; // Restarts the timer clock
+        //   isModified = true;
+        //   return false; // Keep the task in the list
+
+        //   /*
+        //     IF YOU WANT TO PERMANENTLY DELETE EXPIRED TASKS INSTEAD OF RESETTING THEM:
+        //     Comment out the 4 lines above, and uncomment the line below:
+        //     return false;    */
+        // }
+        // If the task cycle time has passed (e.g., 24 hours)
+        if (age >= maxAgeMs) {
+          if (task.status === "completed") {
+            // 1. If completed AND time is up -> Delete it permanently
+            isModified = true;
+            return false;
+          } else {
+            // 2. If pending AND time is up -> Keep it, but reset its clock
+            // (This ensures it doesn't instantly delete tomorrow when you check it off)
+            task.createdAt = now;
+            isModified = true;
+            return true;
+          }
+        }
+
+        return true; // Keep tasks that haven't expired yet
+      });
+
+      return processedTasks;
+    };
+
+    // Apply the logic to all 4 custom task arrays
+    plan.customDaily = manageCustomTasks(plan.customDaily, ONE_DAY);
+    plan.customWeekly = manageCustomTasks(plan.customWeekly, ONE_WEEK);
+
+    if (plan.custom21Day) {
+      plan.custom21Day = manageCustomTasks(plan.custom21Day, TWENTY_ONE_DAYS);
+    }
+    if (plan.custom90Day) {
+      plan.custom90Day = manageCustomTasks(plan.custom90Day, NINETY_DAYS);
+    }
+
+    // Save changes to MongoDB ONLY if tasks were updated or deleted
+    if (isModified) {
+      await plan.save();
+    }
+
+    // Send the fresh, properly cycled plan back to the frontend
     res.status(200).json(plan);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -278,21 +363,65 @@ export const addCustomTask = async (req, res) => {
 
 // @desc    Update a custom task's status
 // @route   PUT /api/plans/custom-task
-export const updateCustomTaskStatus = async (req, res) => {
+// export const updateCustomTaskStatus = async (req, res) => {
+//   try {
+//     const { listType, taskId, status } = req.body;
+
+//     const plan = await Plan.findOne({ user: req.user._id });
+//     if (!plan)
+//       return res.status(404).json({ message: "No active plan found." });
+
+//     const task = plan[listType].id(taskId);
+//     if (!task) return res.status(404).json({ message: "Task not found." });
+
+//     task.status = status;
+//     await plan.save();
+
+//     res.status(200).json(plan);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// Inside controllers/planController.js
+
+export const updateCustomTask = async (req, res) => {
   try {
     const { listType, taskId, status } = req.body;
+
+    // 1. Validate the listType so the server doesn't crash if it receives a bad string
+    const validLists = [
+      "customDaily",
+      "customWeekly",
+      "custom21Day",
+      "customMonthly",
+      "custom90Day",
+    ];
+    if (!validLists.includes(listType)) {
+      return res
+        .status(400)
+        .json({ message: `Invalid list type: ${listType}` });
+    }
+
     const plan = await Plan.findOne({ user: req.user._id });
     if (!plan)
       return res.status(404).json({ message: "No active plan found." });
 
+    // 2. Safely find the specific task inside the requested array using Mongoose's .id()
     const task = plan[listType].id(taskId);
-    if (!task) return res.status(404).json({ message: "Task not found." });
 
+    if (!task) {
+      return res.status(404).json({ message: "Task not found." });
+    }
+
+    // 3. Update the status and save
     task.status = status;
     await plan.save();
 
+    // 4. Return the updated plan to the frontend
     res.status(200).json(plan);
   } catch (error) {
+    console.error("PUT /custom-task Error:", error);
     res.status(500).json({ message: error.message });
   }
 };
