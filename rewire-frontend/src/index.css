@@ -31,11 +31,14 @@
 /* 2. Configure Dark Mode Custom Variant */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 3. Global Body Styles */
+/* 3. Global HTML & Body Styles (Fixed for Mobile Overscroll) */
+html,
 body {
   @apply bg-gray-50 text-gray-900 transition-colors duration-300 antialiased;
 }
 
+/* Apply dark mode to BOTH the html root and body */
+.dark,
 .dark body {
   @apply bg-gray-900 text-gray-100;
 }
