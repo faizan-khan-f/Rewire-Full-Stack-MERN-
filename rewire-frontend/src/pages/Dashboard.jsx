@@ -483,10 +483,18 @@ const Dashboard = () => {
       return;
 
     try {
-      // 🟢 Fix: Use the exact URL path, avoiding the broken API_URL variable
-      await axios.delete("http://localhost:5000/api/ai/plan", {
+      // 🟢 Dynamic API URL resolution for production and local dev
+      const cleanApiUrl = API_URL
+        ? API_URL.replace("/plans", "")
+        : "http://localhost:5000/api";
+
+      await axios.delete(`${cleanApiUrl}/ai/plan`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // // 🟢 Fix: Use the exact URL path, avoiding the broken API_URL variable
+      // await axios.delete("http://localhost:5000/api/ai/plan", {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
 
       setAiPlan(null);
     } catch (err) {
