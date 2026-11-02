@@ -6,19 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>rewire-frontend</title>
   </head>
-  <body>
+   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html> -->
 <!-- Add the Tailwind background classes directly to the html tag -->
+<!-- <html lang="en" class="bg-gray-50 dark:bg-gray-900">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    Add this meta tag to force the mobile address bar to match the dark theme -->
+<!-- <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#111827" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f9fafb" />
+    
+    <title>Rewire</title>
+  </head> -->
+
+<!doctype html>
 <html lang="en" class="bg-gray-50 dark:bg-gray-900">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Add this meta tag to force the mobile address bar to match the dark theme -->
+    <!-- Mobile address bar theme colors -->
     <meta
       name="theme-color"
       media="(prefers-color-scheme: dark)"
@@ -32,4 +46,9 @@
 
     <title>Rewire</title>
   </head>
+  <body>
+    <!-- This is where your React app injects itself -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
