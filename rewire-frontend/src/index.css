@@ -32,13 +32,32 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* 3. Global HTML & Body Styles (Fixed for Mobile Overscroll) */
-html,
-body {
-  @apply bg-gray-50 text-gray-900 transition-colors duration-300 antialiased;
-}
+/* html, */
+/* body { */
+/* @apply bg-gray-50 text-gray-900 transition-colors duration-300 antialiased; */
+/* } */
 
 /* Apply dark mode to BOTH the html root and body */
-.dark,
+/* .dark, */
+/* .dark body { */
+/* @apply bg-gray-900 text-gray-100; */
+/* } */
+
+/* Ensure both HTML and Body share the theme background to eliminate mobile white overscroll gaps */
+html,
+body {
+  background-color: #f9fafb; /* Light mode background (gray-50) */
+  color: #111827; /* Light mode text (gray-900) */
+  margin: 0;
+  padding: 0;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+/* Dark mode root overrides for mobile overscroll */
+.dark html,
 .dark body {
-  @apply bg-gray-900 text-gray-100;
+  background-color: #111827; /* Dark mode background (gray-900) */
+  color: #f3f4f6; /* Dark mode text (gray-100) */
 }
