@@ -23,3 +23,19 @@ Generative AI: Google Gemini API (gemini-3.8-flash)
 Database: MongoDB Atlas / Mongoose ODM
 
 Core Directory Structure
+
+rewire/
+├── frontend-rewire/ # React + Vite client application
+│ ├── src/
+│ │ ├── components/ # UI blocks (AIStrategySection, AIPlanGenerator, RandomQuote)
+│ │ ├── context/ # AuthContext state management
+│ │ ├── pages/ # Dashboard, AuthPage, Home, Settings views
+│ │ └── ...
+│ └── package.json
+└── backend-rewire/ # Node.js + Express API server
+├── controllers/ # Auth, AI Plan, and Custom Target business logic
+├── models/ # Mongoose schemas (User, AIPlan)
+├── routes/ # API routing endpoints (/api/ai/plan)
+├── middlewares/ # JWT protection middleware
+├── utils/ # Background workers (cronJobs.js)
+└── package.json
