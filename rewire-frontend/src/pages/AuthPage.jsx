@@ -24,12 +24,54 @@ const AuthPage = () => {
     setError("");
     setSuccessMsg("");
   };
+  const [loading, setLoading] = useState(false);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   resetMessages();
 
+  //   try {
+  //     if (mode === "login") {
+  //       await login(email, password);
+  //       setSuccessAnim(true);
+  //       setTimeout(() => navigate("/dashboard"), 2500);
+  //     } else if (mode === "signup") {
+  //       await register(name, email, password);
+  //       setSuccessAnim(true);
+  //       setTimeout(() => navigate("/dashboard"), 2500);
+  //     } else if (mode === "forgot") {
+  //       const res = await axios.post(`${API_URL}/forgot-password`, { email });
+  //       setSuccessMsg(res.data.message);
+  //       setTimeout(() => {
+  //         resetMessages();
+  //         setMode("reset");
+  //       }, 1500);
+  //     } else if (mode === "reset") {
+  //       const res = await axios.post(`${API_URL}/reset-password`, {
+  //         email,
+  //         newPassword,
+  //       });
+  //       setSuccessMsg(res.data.message);
+  //       setTimeout(() => {
+  //         setMode("login");
+  //         resetMessages();
+  //         setNewPassword("");
+  //         setPassword("");
+  //       }, 2000);
+  //     }
+  //   } catch (err) {
+  //     setError(
+  //       err.response?.data?.message ||
+  //         "Operation failed. Please verify your details.",
+  //     );
+  //   }
+  // };
   const handleSubmit = async (e) => {
     e.preventDefault();
     resetMessages();
+    setLoading(true);
 
     try {
+      // ...your existing code, unchanged...
       if (mode === "login") {
         await login(email, password);
         setSuccessAnim(true);
@@ -63,6 +105,8 @@ const AuthPage = () => {
         err.response?.data?.message ||
           "Operation failed. Please verify your details.",
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -191,7 +235,7 @@ const AuthPage = () => {
             </div>
           )}
 
-          <button
+          {/* <button
             type="submit"
             className="w-full mt-2 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center transition-transform active:scale-95 shadow-lg shadow-emerald-600/20 text-sm"
           >
@@ -202,6 +246,25 @@ const AuthPage = () => {
               {mode === "reset" && "Reset Password"}
             </span>
             <ArrowRight size={18} className="ml-2" />
+          </button> */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full mt-2 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl flex items-center justify-center transition-transform active:scale-95 shadow-lg shadow-emerald-600/20 text-sm disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            <span>
+              {loading ? (
+                "Please wait..."
+              ) : (
+                <>
+                  {mode === "login" && "Log In"}
+                  {mode === "signup" && "Create Account"}
+                  {mode === "forgot" && "Verify Email"}
+                  {mode === "reset" && "Reset Password"}
+                </>
+              )}
+            </span>
+            {!loading && <ArrowRight size={18} className="ml-2" />}
           </button>
         </form>
 
