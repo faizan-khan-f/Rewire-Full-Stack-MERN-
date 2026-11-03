@@ -207,13 +207,12 @@ import AIPlan from "../models/AIPlan.js";
 // Tried in order. If one is overloaded (503/429) or doesn't exist (404),
 // the next one is used. Override the first with GEMINI_MODEL in your .env.
 const MODEL_CHAIN = [
-  process.env.GEMINI_MODEL || "gemini-3.8-flash",
+  process.env.GEMINI_MODEL || "gemini-3.5-flash-lite",
+  "gemini-3.8-flash",
   "gemini-3.5-flash",
-  "gemini-3.5-flash-lite",
-  "gemini-2.5-flash",
 ];
 
-const ATTEMPTS_PER_MODEL = 3;
+const ATTEMPTS_PER_MODEL = 2;
 const RETRYABLE_STATUS = [429, 503, 504];
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
