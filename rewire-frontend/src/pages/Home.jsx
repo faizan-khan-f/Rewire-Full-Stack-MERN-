@@ -164,8 +164,9 @@ const Home = () => {
           exhaustion, optimize your cortisol levels and mild disorders.
         </p>
         <p className="text-md md:text-xl text-gray-500">
-          Track your daily, weekly, and monthly targets & goals. Additionally,
-          use custom notes to record or plan your master strategy.
+          Track your daily, weekly, and monthly targets & goals and plan
+          strategy notes. Additionally use LockIn feature to complete daily
+          targets.
         </p>
       </div>
 

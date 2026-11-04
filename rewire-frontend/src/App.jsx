@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
+import LockIn from "./pages/LockIn"; // Add this import
 
 function App() {
   return (
@@ -44,6 +45,8 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
+                {/* // Inside your <Routes> block, add: */}
+                <Route path="/lock-in" element={<LockIn />} />
                 <Route
                   path="/profile"
                   element={

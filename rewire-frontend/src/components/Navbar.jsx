@@ -10,6 +10,7 @@ import {
   LogOut,
   User,
   Settings,
+  Target,
 } from "lucide-react";
 
 const Navbar = () => {
@@ -27,6 +28,30 @@ const Navbar = () => {
     logout();
     closeMenu();
   };
+  const TargetArrowIcon = ({ size = 24, className = "" }) => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      {/* Target Rings */}
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+      {/* Arrow Shaft piercing the center */}
+      <path d="M22 2 12 12" />
+      {/* Arrow Feathers */}
+      <path d="M18 2l4 4" />
+      <path d="M15 5l4 4" />
+    </svg>
+  );
 
   return (
     <nav className="top-0 z-50 relative bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 transition-colors duration-300">
@@ -58,16 +83,34 @@ const Navbar = () => {
                 Contact Us
               </Link>
               {user && (
-                <a
-                  href="https://task-manager-s5f2.onrender.com"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center hover:text-emerald-500 transition-colors"
+                <Link
+                  to="/lock-in"
+                  className=" text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 transition-colors"
+                  title="Lock In"
                 >
-                  <CheckSquare size={18} className="mr-1 text-emerald-300" />
-                  To-Do
-                </a>
+                  {/* <Target size={22} /> */}
+                  <TargetArrowIcon size={22} />
+                </Link>
               )}
+              {/* // Add this link wherever your other Nav links are (e.g.,
+              Dashboard) */}
+              {/* <Link
+                to="/lock-in"
+                className="hover:text-blue-500 transition-colors"
+              > */}
+
+              {/* </Link> */}
+              {/* {user && (
+                // <a
+                //   href="https://task-manager-s5f2.onrender.com"
+                //   target="_blank"
+                //   rel="noreferrer"
+                //   className="flex items-center hover:text-emerald-500 transition-colors"
+                // >
+                //   <CheckSquare size={18} className="mr-1 text-emerald-300" />
+                //   To-Do
+                // </a>
+              )} */}
             </div>
           </div>
 
@@ -77,28 +120,27 @@ const Navbar = () => {
           <div className="flex items-center space-x-3 md:space-x-4 text-gray-600 dark:text-gray-300">
             {/* Desktop Only: Community & Feedback Links */}
             <div className="hidden md:flex items-center space-x-4">
-              <a
+              {/* <a
                 href="https://chat.whatsapp.com/LFIXBEsa6PBAUXtF9zwLFH"
                 target="_blank"
                 rel="noreferrer"
                 title="WhatsApp Community"
                 className="hover:text-emerald-500 transition-colors"
               >
-                <MessageSquare size={20} />
-              </a>
-              <a
+                <MessageSquare size={20} /> */}
+              {/* </a> */}
+              {/* <a
                 href="mailto:rewire.pvt@gmail.com?subject=Feedback and Suggestions"
                 title="Send Feedback"
                 className="text-sm font-medium hover:text-emerald-500 transition-colors"
               >
                 Feedback/Suggestions
-              </a>
+              </a> */}
               {/* Vertical Divider (Desktop Only) */}
               <div className="h-6 w-px bg-gray-300 dark:bg-gray-700 mx-2"></div>
             </div>
-
             {/* Mobile Only: To-Do Icon (Rightmost side before theme/menu) */}
-            {user && (
+            {/* {user && (
               <a
                 href="https://task-manager-s5f2.onrender.com"
                 target="_blank"
@@ -108,8 +150,17 @@ const Navbar = () => {
               >
                 <CheckSquare size={22} />
               </a>
+            )} */}
+            {/* Mobile Only: Lock In Icon (Rightmost side before theme/menu) */}
+            {user && (
+              <Link
+                to="/lock-in"
+                className="md:hidden text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 transition-colors"
+                title="Lock In"
+              >
+                <Target size={22} />
+              </Link>
             )}
-
             {/* Theme Toggle Button (Visible on both) */}
             <button
               onClick={toggleTheme}
@@ -118,7 +169,6 @@ const Navbar = () => {
             >
               {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-
             {/* Desktop Only: User Auth Section */}
             <div className="hidden md:flex items-center space-x-4 ml-2">
               {user ? (
@@ -155,7 +205,6 @@ const Navbar = () => {
                 </Link>
               )}
             </div>
-
             {/* Mobile Only: Hamburger Button / Dropdown Container */}
             <div className="md:hidden flex items-center relative">
               <button
