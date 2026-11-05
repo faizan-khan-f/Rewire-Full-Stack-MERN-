@@ -51,13 +51,14 @@ const TalkToSpidey = () => {
     setMessages((prev) => [...prev, userMessage]);
     setInput("");
     setIsTyping(true);
-    const API_BASE_URL =
-      import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
     try {
       //   const res = await axios.post("http://localhost:5000/api/ai/chat", {
       //     message: userMessage.text,
       //     history: currentHistory,
       //   });
+      const API_BASE_URL =
+        import.meta.env.VITE_API_URL || "http://localhost:5000/api";
       const res = await axios.post(`${API_BASE_URL}/ai/chat`, {
         message: userMessage.text,
         history: currentHistory,
