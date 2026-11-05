@@ -7,6 +7,14 @@ import {
   resetCustomPlan,
   toggleTaskCompletion,
 } from "../controllers/aiController.js";
+// import express from "express";
+import { chatWithSpidey } from "../controllers/aiController.js";
+
+// const router = express.Router();
+
+// router.post('/generate', generatePlan);
+
+// export default router;
 
 // Import the new routes
 
@@ -20,5 +28,6 @@ router.delete("/plan", protect, resetCustomPlan);
 // 🟢 Route for toggling task statuses
 router.patch("/plan/task", protect, toggleTaskCompletion);
 router.get("/myplan", protect, getActiveAIPlan);
+router.post("/chat", chatWithSpidey); // New Spidey Chat endpoint
 
 export default router;

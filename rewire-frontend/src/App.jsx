@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import LockIn from "./pages/LockIn"; // Add this import
+import TalkToSpidey from "./pages/TalkToSpidey";
 
 function App() {
   return (
@@ -47,6 +48,15 @@ function App() {
                 />
                 {/* // Inside your <Routes> block, add: */}
                 <Route path="/lock-in" element={<LockIn />} />
+                {/* // Inside your main <Routes> block: */}
+                <Route
+                  path="/spidey"
+                  element={
+                    <ProtectedRoute>
+                      <TalkToSpidey />
+                    </ProtectedRoute>
+                  }
+                />
                 <Route
                   path="/profile"
                   element={

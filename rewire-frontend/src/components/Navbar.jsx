@@ -12,6 +12,7 @@ import {
   Settings,
   Target,
 } from "lucide-react";
+import { Bot } from "lucide-react"; // Add Bot to your lucide-react imports
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -92,13 +93,23 @@ const Navbar = () => {
                   <TargetArrowIcon size={22} />
                 </Link>
               )}
+              {/* // Place this inside your Navbar rendering (e.g., next to the
+              Lock-In TargetArrowIcon) */}
+              {user && (
+                <Link
+                  to="/spidey"
+                  className="text-emerald-500 dark:text-emerald-400 hover:text-emerald-300 transition-all transform hover:scale-110"
+                  title="Talk to Spidey"
+                >
+                  <Bot size={24} />
+                </Link>
+              )}
               {/* // Add this link wherever your other Nav links are (e.g.,
               Dashboard) */}
               {/* <Link
                 to="/lock-in"
                 className="hover:text-blue-500 transition-colors"
               > */}
-
               {/* </Link> */}
               {/* {user && (
                 // <a
@@ -159,6 +170,17 @@ const Navbar = () => {
                 title="Lock In"
               >
                 <Target size={22} />
+              </Link>
+            )}
+            {/* // Place this inside your Navbar rendering (e.g., next to the
+            Lock-In TargetArrowIcon) */}
+            {user && (
+              <Link
+                to="/spidey"
+                className="text-emerald-500 dark:text-emerald-400 hover:text-emerald-300 transition-all transform hover:scale-110"
+                title="Talk to Spidey"
+              >
+                <Bot size={24} />
               </Link>
             )}
             {/* Theme Toggle Button (Visible on both) */}

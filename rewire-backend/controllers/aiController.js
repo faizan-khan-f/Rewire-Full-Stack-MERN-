@@ -211,7 +211,7 @@ const MODEL_CHAIN = [
   "gemini-3.8-flash",
   "gemini-3.5-flash",
 ];
-
+// const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
 const ATTEMPTS_PER_MODEL = 2;
 const RETRYABLE_STATUS = [429, 503, 504];
 
@@ -500,5 +500,127 @@ export const toggleTaskCompletion = async (req, res) => {
   } catch (error) {
     console.error("Toggle Task Error:", error);
     res.status(500).json({ message: "Failed to update task status." });
+  }
+};
+
+// export const chatWithSpidey = async (req, res) => {
+//   try {
+//     const { message, history } = req.body;
+
+//     // 1. Force the history to ALWAYS start with a 'user' system prompt
+//     let formattedHistory = [
+//       {
+//         role: "user",
+//         parts: [
+//           {
+//             text: "System Instruction: You are 'Spidey', a highly analytical, straight-talking, and motivating AI Clinical Coach for a productivity app. Keep responses concise, actionable, and focused on rewiring habits.",
+//           },
+//         ],
+//       },
+//       {
+//         role: "model",
+//         parts: [
+//           { text: "Understood. I am Spidey. Let's optimize your focus." },
+//         ],
+//       },
+//     ];
+
+//     // 2. Append the frontend history, skipping the hardcoded UI greeting
+//     if (history && history.length > 0) {
+//       history.forEach((msg, index) => {
+//         // Skip the very first message if it is the "Hey! I'm Spidey..." greeting
+//         if (index === 0 && msg.role === "model") return;
+
+//         formattedHistory.push({
+//           role: msg.role === "model" ? "model" : "user",
+//           parts: [{ text: msg.text }],
+//         });
+//       });
+//     }
+
+//     const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash-lite" });
+//     const chat = model.startChat({ history: formattedHistory });
+
+//     const result = await chat.sendMessage(message);
+//     const responseText = result.response.text();
+
+//     res.status(200).json({ reply: responseText });
+//   } catch (error) {
+//     console.error("Spidey Chat Error:", error);
+//     res
+//       .status(500)
+//       .json({ message: "Failed to connect to Spidey's neural net." });
+//   }
+// };
+export const chatWithSpidey = async (req, res) => {
+  try {
+    const { message, history } = req.body;
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ message: "Message is required." });
+    }
+
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return res
+        .status(500)
+        .json({ message: "Server configuration error. API Key missing." });
+    }
+    const genAI = new GoogleGenerativeAI(apiKey);
+
+    // History must start with a 'user' turn and alternate user/model
+    const formattedHistory = [
+      {
+        role: "user",
+        parts: [
+          {
+            text: "System Instruction: You are 'Spidey', a highly analytical, straight-talking, and motivating AI Clinical Coach for a productivity app. Keep responses concise, actionable, and focused on rewiring habits.",
+          },
+        ],
+      },
+      {
+        role: "model",
+        parts: [
+          { text: "Understood. I am Spidey. Let's optimize your focus." },
+        ],
+      },
+    ];
+
+    // Append frontend history, skipping the hardcoded UI greeting
+    if (Array.isArray(history)) {
+      history.forEach((msg, index) => {
+        if (index === 0 && msg.role === "model") return;
+        formattedHistory.push({
+          role: msg.role === "model" ? "model" : "user",
+          parts: [{ text: msg.text }],
+        });
+      });
+    }
+
+    let lastError;
+    for (const modelName of MODEL_CHAIN) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const chat = model.startChat({ history: formattedHistory });
+        const result = await chat.sendMessage(message);
+        return res.status(200).json({ reply: result.response.text() });
+      } catch (error) {
+        lastError = error;
+        // Overloaded or unavailable model: try the next one
+        if (![404, ...RETRYABLE_STATUS].includes(error?.status)) throw error;
+        console.warn(
+          `Chat: ${modelName} failed (${error.status}), trying next...`,
+        );
+      }
+    }
+    throw lastError;
+  } catch (error) {
+    console.error("Spidey Chat Error:", error);
+    const busy = RETRYABLE_STATUS.includes(error?.status);
+    res.status(busy ? 503 : 500).json({
+      message: busy
+        ? "Spidey is busy right now. Please try again in a moment."
+        : "Failed to connect to Spidey's neural net.",
+    });
   }
 };
