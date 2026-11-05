@@ -93,8 +93,6 @@ const Navbar = () => {
                   <TargetArrowIcon size={22} />
                 </Link>
               )}
-              {/* // Place this inside your Navbar rendering (e.g., next to the
-              Lock-In TargetArrowIcon) */}
               {user && (
                 <Link
                   to="/spidey"
@@ -104,6 +102,11 @@ const Navbar = () => {
                   <Bot size={24} />
                 </Link>
               )}
+              {/* // {/* // Place this inside your Navbar rendering (e.g., next to the
+              // Lock-In TargetArrowIcon) */}
+              {/* // {user && (
+              // */}
+              {/* // )} */}
               {/* // Add this link wherever your other Nav links are (e.g.,
               Dashboard) */}
               {/* <Link
@@ -177,7 +180,7 @@ const Navbar = () => {
             {user && (
               <Link
                 to="/spidey"
-                className="text-emerald-500 dark:text-emerald-400 hover:text-emerald-300 transition-all transform hover:scale-110"
+                className="md:hidden text-emerald-500 dark:text-emerald-400 hover:text-emerald-300 transition-all transform hover:scale-110"
                 title="Talk to Spidey"
               >
                 <Bot size={24} />
